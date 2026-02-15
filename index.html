@@ -29,6 +29,7 @@
     <div id="app-interface">
         <button class="back-btn" onclick="location.reload()">↩</button>
         <div class="top-half">
+            <img id="hero-title" src="" alt="Titre">
             <div class="counter-row">
                 <button class="control" onclick="change('hp', -1)">-</button>
                 <div class="value-box">
@@ -76,13 +77,24 @@
 
         function selectHero(key) {
             const h = heroes[key];
+            
+            // On applique TOUS les styles ici
             document.documentElement.style.setProperty('--bg-url', h.bg);
             document.documentElement.style.setProperty('--poke-url', h.poke);
             document.documentElement.style.setProperty('--box-bg', h.box);
             document.documentElement.style.setProperty('--text-color', h.text);
             document.documentElement.style.setProperty('--btn-border', h.border);
             
-            if(h.special) document.getElementById('ultralaser-container').style.display = 'block';
+            // Mise à jour de l'image titre
+            document.getElementById('hero-title').src = 'titre_' + key + '.png';
+
+            // Gestion du bouton spécial
+            if(h.special) {
+                document.getElementById('ultralaser-container').style.display = 'block';
+            } else {
+                document.getElementById('ultralaser-container').style.display = 'none';
+            }
+
             document.getElementById('selection-screen').style.display = 'none';
             document.getElementById('app-interface').style.display = 'flex';
         }
@@ -100,6 +112,7 @@
         }
 
         function useUltralaser() { if (laserCooldown === 0) { laserCooldown = 2; updateLaserButton(); } }
+        
         function updateLaserButton() {
             const btn = document.getElementById('btn-ultralaser');
             if (laserCooldown > 0) {
