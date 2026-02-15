@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dice Throne Responsive</title>
+    <style>
+        :root {
+            --bg-url: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070');
+            --poke-url: none;
+            --accent-color: #ffb7c5;
+        }
+
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; padding: 0;
+            background: var(--bg-url) no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Empêche le scroll inutile */
+            color: white;
+        }
+
+        /* ÉCRAN DE SÉLECTION */
+        #selection-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .hero-options { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+        
+        .hero-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.3);
+            text-align: center;
+            width: 140px;
+        }
+
+        /* STRUCTURE PRINCIPALE 50/50 */
+        #app-interface {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* MOITIÉ HAUTE : COMPTEURS */
+        .top-half {
+            height: 55%; /* Un peu plus de la moitié pour le confort des boutons */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            z-index: 5;
+        }
+
+        /* MOITIÉ BASSE : POKEMON */
+        .bottom-half {
+            height: 45%;
+            width: 100%;
+            background: var(--poke-url) no-repeat bottom center;
+            background-size: contain;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .counter-row {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 15px;
+        }
+
+        .value-box {
+            background: rgba(255, 255, 255, 0.6);
+            flex-grow: 1;
+            margin: 0 10px;
+            padding: 10px;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .value { 
+            font-size: clamp(2.5rem, 10vw, 4rem); /* Taille s'adapte à l'écran */
+            font-weight: bold; 
+            color: #000; 
+            line-height: 1;
+        }
+
+        button.control {
+            width: clamp(60px, 15vw, 85px);
+            height: clamp(60px, 15vw, 85px);
+            background: rgba(255, 255, 255, 0.6);
+            border: none;
+            border-radius: 50%;
+            font-size: 2rem;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid white;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="selection-screen">
+        <h1>DICE THRONE</h1>
+        <p>Choisis ton équipe</p>
+        <div class="hero-options">
+            <div class="hero-card" onclick="selectHero('pikachu')">
+                <div style="font-size: 40px;">⚡</div>
+                <h3>Électrik</h3>
+            </div>
+            <div class="hero-card" onclick="selectHero('dracaufeu')">
+                <div style="font-size: 40px;">🔥</div>
+                <h3>Brasier</h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-interface">
+        <button class="back-btn" onclick="goBack()">↩</button>
+        
+        <div class="top-half">
+            <div class="counter-row">
+                <button class="control" onclick="change('hp', -1)">❮</button>
+                <div class="value-box">
+                    <span id="hp" class="value">50</span>
+                </div>
+                <button class="control" onclick="change('hp', 1)">❯</button>
+            </div>
+
+            <div class="counter-row">
+                <button class="control" onclick="change('cp', -1)">❮</button>
+                <div class="value-box">
+                    <span id="cp" class="value">2</span>
+                </div>
+                <button class="control" onclick="change('cp', 1)">❯</button>
+            </div>
+        </div>
+
+        <div class="bottom-half"></div>
+    </div>
+
+    <script>
+        const heroes = {
+            'pikachu': {
+                bg: 'url("https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=2070")',
+                poke: 'url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png")',
+                accent: '#f1c40f'
+            },
+            'dracaufeu': {
+                bg: 'url("https://images.unsplash.com/photo-1506466010722-395aa2bef877?q=80&w=2070")',
+                poke: 'url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png")',
+                accent: '#e67e22'
+            }
+        };
+
+        function selectHero(key) {
+            const h = heroes[key];
+            document.documentElement.style.setProperty('--bg-url', h.bg);
+            document.documentElement.style.setProperty('--poke-url', h.poke);
+            document.documentElement.style.setProperty('--accent-color', h.accent);
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('app-interface').style.display = 'flex';
+        }
+
+        function goBack() {
+            document.getElementById('selection-screen').style.display = 'flex';
+            document.getElementById('app-interface').style.display = 'none';
+        }
+
+        function change(id, amount) {
+            let el = document.getElementById(id);
+            let val = parseInt(el.innerText) + amount;
+            if (id === 'cp') val = Math.max(0, Math.min(15, val));
+            else val = Math.max(0, val);
+            el.innerText = val;
+        }
+    </script>
+</body>
+</html>
