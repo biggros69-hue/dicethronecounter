@@ -8,7 +8,8 @@
         :root {
             --bg-url: url('acceuil.jpg');
             --poke-url: none;
-            --accent-color: #ffffff;
+            --accent-color: #ff6600; /* Orange Vif */
+            --dark-bg: rgba(40, 40, 40, 0.8); /* Gris foncé transparent */
         }
 
         body { 
@@ -24,58 +25,83 @@
         /* ÉCRAN DE SÉLECTION */
         #selection-screen {
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.85);
             z-index: 100;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
         }
 
-        .hero-options { display: flex; gap: 30px; margin-top: 20px; }
+        .hero-options { display: flex; gap: 20px; margin-top: 20px; }
         
         .hero-card {
             background: rgba(255,255,255,0.1);
-            padding: 10px; border-radius: 20px;
+            padding: 15px; border-radius: 20px;
             cursor: pointer; border: 3px solid white;
-            transition: 0.3s; text-align: center; width: 150px;
+            transition: 0.3s; text-align: center; 
+            width: 140px; min-height: 220px;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        .hero-card img { width: 100%; border-radius: 10px; }
+        .hero-card img { width: 100%; height: 150px; object-fit: contain; border-radius: 10px; }
 
-        /* INTERFACE */
+        /* INTERFACE DARK & ORANGE */
         #app-interface { display: none; height: 100vh; flex-direction: column; }
 
         .top-half {
-            height: 60%; display: flex; flex-direction: column;
+            height: 70%; display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 5;
         }
 
         .bottom-half {
-            height: 40%; width: 100%;
+            height: 30%; width: 100%;
             background: var(--poke-url) no-repeat bottom center;
             background-size: contain; pointer-events: none; z-index: 1;
         }
 
-        .counter-row { display: flex; align-items: center; width: 90%; max-width: 400px; margin-bottom: 20px; }
+        .counter-row { display: flex; align-items: center; width: 92%; max-width: 400px; margin-bottom: 12px; }
 
+        /* Style des boîtes (Dark transparent) */
         .value-box {
-            background: rgba(255, 255, 255, 0.7); flex-grow: 1;
-            margin: 0 15px; padding: 15px; border-radius: 25px;
-            text-align: center; backdrop-filter: blur(10px);
+            background: var(--dark-bg); 
+            flex-grow: 1;
+            margin: 0 12px; padding: 10px; border-radius: 20px;
+            text-align: center; backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 102, 0, 0.3);
         }
 
-        .value { font-size: 3.5rem; font-weight: bold; color: #333; }
+        /* Chiffres en Orange Vif */
+        .value { font-size: 2.8rem; font-weight: bold; color: var(--accent-color); text-shadow: 0 0 10px rgba(255, 102, 0, 0.4); }
 
+        /* Boutons + et - Dark & Orange */
         button.control {
-            width: 70px; height: 70px; background: white;
-            border: none; border-radius: 50%; font-size: 2rem;
+            width: 65px; height: 65px; 
+            background: var(--dark-bg);
+            border: 2px solid var(--accent-color); 
+            border-radius: 50%; font-size: 2.2rem;
             color: var(--accent-color); cursor: pointer; font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        /* BOUTON ULTRALASER */
+        #ultralaser-container { display: none; width: 92%; max-width: 400px; margin-top: 10px; }
+        
+        #btn-ultralaser {
+            width: 100%; padding: 15px; border-radius: 15px;
+            border: 2px solid #ffcc00; background: var(--dark-bg); 
+            color: #ffcc00; font-weight: bold; font-size: 1rem; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        #btn-ultralaser.cooldown {
+            border-color: #666; color: #666; opacity: 0.6;
         }
 
         .back-btn {
-            position: absolute; top: 20px; left: 20px;
-            background: rgba(0,0,0,0.6); border: 1px solid white;
-            color: white; padding: 10px; border-radius: 10px; z-index: 10;
+            position: absolute; top: 15px; right: 15px;
+            background: var(--dark-bg); border: 1px solid var(--accent-color);
+            color: var(--accent-color); padding: 8px 12px; border-radius: 10px; z-index: 10;
         }
     </style>
 </head>
@@ -85,24 +111,24 @@
         <h1 style="text-shadow: 2px 2px 10px black;">QUI ES-TU ?</h1>
         <div class="hero-options">
             <div class="hero-card" onclick="selectHero('boy')">
-                <img src="boy.png" alt="Garçon">
-                <h3>Garçon</h3>
+                <img src="boy.png" alt="Dresseur">
+                <h3>DRESSEUR</h3>
             </div>
             <div class="hero-card" onclick="selectHero('girl')">
-                <img src="girl.png" alt="Fille">
-                <h3>Fille</h3>
+                <img src="girl.png" alt="Dresseuse">
+                <h3>DRESSEUSE</h3>
             </div>
         </div>
     </div>
 
     <div id="app-interface">
-        <button class="back-btn" onclick="location.reload()">↩ Quitter</button>
+        <button class="back-btn" onclick="location.reload()">↩</button>
         
         <div class="top-half">
             <div class="counter-row">
                 <button class="control" onclick="change('hp', -1)">-</button>
                 <div class="value-box">
-                    <div style="color:#666; font-size:0.8rem;">VIE</div>
+                    <div style="color:#bbb; font-size:0.6rem; font-weight: bold; letter-spacing: 1px;">POINTS DE VIE</div>
                     <span id="hp" class="value">50</span>
                 </div>
                 <button class="control" onclick="change('hp', 1)">+</button>
@@ -111,10 +137,23 @@
             <div class="counter-row">
                 <button class="control" onclick="change('cp', -1)">-</button>
                 <div class="value-box">
-                    <div style="color:#666; font-size:0.8rem;">COMBAT</div>
+                    <div style="color:#bbb; font-size:0.6rem; font-weight: bold; letter-spacing: 1px;">COMBAT (PC)</div>
                     <span id="cp" class="value">2</span>
                 </div>
                 <button class="control" onclick="change('cp', 1)">+</button>
+            </div>
+
+            <div class="counter-row">
+                <button class="control" onclick="change('turn', -1)">-</button>
+                <div class="value-box">
+                    <div style="color:#bbb; font-size:0.6rem; font-weight: bold; letter-spacing: 1px;">TOUR</div>
+                    <span id="turn" class="value">1</span>
+                </div>
+                <button class="control" onclick="change('turn', 1)">+</button>
+            </div>
+
+            <div id="ultralaser-container">
+                <button id="btn-ultralaser" onclick="useUltralaser()">⚡ ULTRA-LASER PRÊT ⚡</button>
             </div>
         </div>
 
@@ -123,23 +162,20 @@
 
     <script>
         const heroes = {
-            'boy': {
-                bg: 'url("fond_boy.png")',
-                poke: 'url("boy_team.png")',
-                accent: '#3498db'
-            },
-            'girl': {
-                bg: 'url("fond_girl.png")',
-                poke: 'url("girl_team.png")',
-                accent: '#e91e63'
-            }
+            'boy': { bg: 'url("fond_boy.png")', poke: 'url("boy_team.png")', accent: '#ff6600', special: true },
+            'girl': { bg: 'url("fond_girl.png")', poke: 'url("girl_team.png")', accent: '#ff0077', special: false }
         };
+
+        let laserCooldown = 0;
 
         function selectHero(key) {
             const h = heroes[key];
             document.documentElement.style.setProperty('--bg-url', h.bg);
             document.documentElement.style.setProperty('--poke-url', h.poke);
             document.documentElement.style.setProperty('--accent-color', h.accent);
+            
+            if(h.special) document.getElementById('ultralaser-container').style.display = 'block';
+            
             document.getElementById('selection-screen').style.display = 'none';
             document.getElementById('app-interface').style.display = 'flex';
         }
@@ -147,9 +183,38 @@
         function change(id, amount) {
             let el = document.getElementById(id);
             let val = parseInt(el.innerText) + amount;
-            if (id === 'cp') val = Math.max(0, Math.min(15, val));
+            
+            if (id === 'turn') {
+                val = Math.max(1, val);
+                if (amount > 0 && laserCooldown > 0) {
+                    laserCooldown--;
+                    updateLaserButton();
+                }
+            }
+            else if (id === 'cp') val = Math.max(0, Math.min(15, val));
             else val = Math.max(0, val);
+            
             el.innerText = val;
+        }
+
+        function useUltralaser() {
+            if (laserCooldown === 0) {
+                laserCooldown = 2;
+                updateLaserButton();
+            }
+        }
+
+        function updateLaserButton() {
+            const btn = document.getElementById('btn-ultralaser');
+            if (laserCooldown > 0) {
+                btn.classList.add('cooldown');
+                btn.innerText = `RECHARGE : ${laserCooldown} TOURS`;
+                btn.disabled = true;
+            } else {
+                btn.classList.remove('cooldown');
+                btn.innerText = "⚡ ULTRA-LASER PRÊT ⚡";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
